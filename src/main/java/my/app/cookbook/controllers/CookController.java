@@ -4,6 +4,7 @@ import my.app.cookbook.model.Ingredient;
 import my.app.cookbook.model.Recipe;
 import my.app.cookbook.services.impl.IngredientServiceImpl;
 import my.app.cookbook.services.impl.RecipeServiceImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -19,9 +20,10 @@ public class CookController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping("/recipes")
-    public void recipe(@RequestParam String name, @RequestParam String cookingTime, @RequestParam LinkedList<String> steps, @RequestParam LinkedList<Ingredient> ingredients) {
-        recipeService.addRecipe(new Recipe(name, cookingTime, steps, ingredients));
+    @PostMapping("/recipes/add")
+    public ResponseEntity recipe(@RequestBody Recipe recipe) {
+        recipeService.addRecipe(recipe);
+        return ResponseEntity.ok(recipe);
     }
 
     @GetMapping("/recipes/{id}")
@@ -29,9 +31,10 @@ public class CookController {
         return recipeService.getRecipe(id);
     }
 
-    @GetMapping("/ingredients")
-    public void ingredient(@RequestParam String name, @RequestParam int quantity, @RequestParam String measureUnit) {
-        ingredientService.addIngredient(new Ingredient(name, quantity, measureUnit));
+    @PostMapping("/ingredients/add")
+    public ResponseEntity ingredient(@RequestBody Ingredient ingredient) {
+        ingredientService.addIngredient(ingredient);
+        return ResponseEntity.ok(ingredient);
     }
 
     @GetMapping("/ingredients/{id}")
