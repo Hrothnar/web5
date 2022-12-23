@@ -51,8 +51,8 @@ public class RecipeController {
     public ResponseEntity<Map<Long, Recipe>> getAllRecipes() {
         return ResponseEntity.ok(recipeService.getAllRecipes());
     }
-    @GetMapping("/byIngredientId/{id1}")
-    public ResponseEntity<Map<Long, Recipe>> getRecipesByIngredientId(@PathVariable long id1, @RequestParam(required = false) long id2) {
+    @GetMapping("/byIngredientId")
+    public ResponseEntity<Map<Long, Recipe>> getRecipesByIngredientId(@RequestParam(required = true) Long id1, @RequestParam(required = false) Long id2) {
         Map<Long, Recipe> recipesList = recipeService.getRecipesByIngredientId(id1, id2);
         if (recipesList != null) {
             return ResponseEntity.ok(recipesList);

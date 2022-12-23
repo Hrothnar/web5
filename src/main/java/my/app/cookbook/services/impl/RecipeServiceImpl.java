@@ -45,19 +45,18 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Map<Long, Recipe> getRecipesByIngredientId(long id1, long id2) {
+    public Map<Long, Recipe> getRecipesByIngredientId(Long id1, Long id2) {
         Map<Long, Recipe> recipesContainsIngredient = new TreeMap<>();
-        Iterator<Map.Entry<Long, Recipe>> iter = recipes.entrySet().iterator();
-        if (id2 == 0) {
-            while (iter.hasNext()) {
-                if (iter.next().getValue().getIngredients().containsKey(id1)) {
-                    recipesContainsIngredient.put(iter.next().getKey(), iter.next().getValue());
+        if (id2 == null) {
+            for (Map.Entry<Long, Recipe> one : recipes.entrySet()) {
+                if (one.getValue().getIngredients().containsKey(id1)) {
+                    recipesContainsIngredient.put(one.getKey(), one.getValue());
                 }
             }
         } else {
-            while (iter.hasNext()) {
-                if (iter.next().getValue().getIngredients().containsKey(id1) && iter.next().getValue().getIngredients().containsKey(id2)) {
-                    recipesContainsIngredient.put(iter.next().getKey(), iter.next().getValue());
+            for (Map.Entry<Long, Recipe> one : recipes.entrySet()) {
+                if (one.getValue().getIngredients().containsKey(id1) && one.getValue().getIngredients().containsKey(id2)) {
+                    recipesContainsIngredient.put(one.getKey(), one.getValue());
                 }
             }
         }
