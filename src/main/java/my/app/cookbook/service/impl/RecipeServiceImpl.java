@@ -1,10 +1,10 @@
-package my.app.cookbook.services.impl;
+package my.app.cookbook.service.impl;
 
 import my.app.cookbook.model.Recipe;
-import my.app.cookbook.services.RecipeService;
+import my.app.cookbook.service.RecipeService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -47,7 +47,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Map<Long, Recipe> getRecipesByIngredientId(Long id1, Long id2) {
         Map<Long, Recipe> recipesContainsIngredient = new TreeMap<>();
-        if (id2 == null) {
+        if (ObjectUtils.isEmpty(id2)) {
             for (Map.Entry<Long, Recipe> one : recipes.entrySet()) {
                 if (one.getValue().getIngredients().containsKey(id1)) {
                     recipesContainsIngredient.put(one.getKey(), one.getValue());
@@ -61,6 +61,22 @@ public class RecipeServiceImpl implements RecipeService {
             }
         }
         return recipesContainsIngredient;
+    }
+
+    @Override
+    public Map<Long, Recipe> getListOfRecipes(byte page) {
+        Map<Long, Recipe> recipesByPage = new TreeMap<>();
+        byte step = 10;
+        int count = 0;
+        if (page > 0) {
+            for (Map.Entry<Long, Recipe> one : recipes.entrySet()) {
+                if (count >= step * (page - 1) && count < (step * page) - 1) {
+                    recipesByPage.put(one.getKey(), one.getValue());
+                }
+                count++;
+            }
+        }
+        return recipesByPage;
     }
 
 

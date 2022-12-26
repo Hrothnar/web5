@@ -1,7 +1,7 @@
-package my.app.cookbook.services.impl;
+package my.app.cookbook.service.impl;
 
 import my.app.cookbook.model.Ingredient;
-import my.app.cookbook.services.IngredientService;
+import my.app.cookbook.service.IngredientService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,10 +17,12 @@ public class IngredientServiceImpl implements IngredientService {
         ingredients.put(ingredientId, ingredient);
         return ingredientId++;
     }
+
     @Override
     public Ingredient getIngredient(long key) {
         return ingredients.get(key);
     }
+
     @Override
     public Ingredient editIngredient(Ingredient ingredient, long id) {
         if (ingredients.containsKey(id)) {
@@ -29,17 +31,17 @@ public class IngredientServiceImpl implements IngredientService {
         }
         return null;
     }
+
     @Override
     public boolean removeIngredient(long id) {
         Ingredient ingredient = ingredients.remove(id);
         return ingredient != null;
     }
+
     @Override
     public Map<Long, Ingredient> getAllIngredients() {
         return ingredients;
     }
-
-
 
 
 }
