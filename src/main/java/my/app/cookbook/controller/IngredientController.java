@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import my.app.cookbook.model.Ingredient;
 import my.app.cookbook.service.impl.IngredientServiceImpl;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

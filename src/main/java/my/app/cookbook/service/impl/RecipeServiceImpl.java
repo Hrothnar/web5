@@ -1,10 +1,16 @@
 package my.app.cookbook.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import my.app.cookbook.model.Recipe;
 import my.app.cookbook.service.RecipeService;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -12,10 +18,18 @@ import java.util.TreeMap;
 public class RecipeServiceImpl implements RecipeService {
     private static Map<Long, Recipe> recipes = new TreeMap<>();
     private static long recipeId = 1;
+    private FileServiceImpl fileService;
+    @Value("${recipe.file.name}")
+    private String fileName;
+
+    public RecipeServiceImpl(FileServiceImpl fileService) {
+        this.fileService = fileService;
+    }
 
     @Override
     public long addRecipe(Recipe recipe) {
         recipes.put(recipeId, recipe);
+        safeToFile();
         return recipeId++;
     }
 
@@ -28,6 +42,7 @@ public class RecipeServiceImpl implements RecipeService {
     public Recipe editRecipe(Recipe recipe, long id) {
         if (recipes.containsKey(id)) {
             recipes.put(id, recipe);
+            safeToFile();
             return recipe;
         }
         return null;
@@ -77,6 +92,30 @@ public class RecipeServiceImpl implements RecipeService {
             }
         }
         return recipesByPage;
+    }
+
+    private void safeToFile() {
+        try {
+            String json = new ObjectMapper().writeValueAsString(recipes);
+            fileService.writeToFile(json, fileName);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void readFromFile() {
+        try {
+            String json = fileService.readFromFile(fileName);
+            recipes = new ObjectMapper().readValue(json, new TypeReference<Map<Long, Recipe>>() {
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostConstruct
+    private void primalReader() {
+        fileService.readFromFile(fileName);
     }
 
 
