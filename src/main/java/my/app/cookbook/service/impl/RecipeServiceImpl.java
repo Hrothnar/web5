@@ -19,8 +19,8 @@ public class RecipeServiceImpl implements RecipeService {
     private static Map<Long, Recipe> recipes = new TreeMap<>();
     private static long recipeId = 1;
     private FileServiceImpl fileService;
-    @Value("${recipe.file.name}")
-    private String fileName;
+    @Value("${recipes.file.path}")
+    private String filePath;
 
     public RecipeServiceImpl(FileServiceImpl fileService) {
         this.fileService = fileService;
@@ -97,7 +97,7 @@ public class RecipeServiceImpl implements RecipeService {
     private void safeToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(recipes);
-            fileService.writeToFile(json, fileName);
+            fileService.writeToFile(json, filePath);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -105,7 +105,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     private void readFromFile() {
         try {
-            String json = fileService.readFromFile(fileName);
+            String json = fileService.readFromFile(filePath);
             recipes = new ObjectMapper().readValue(json, new TypeReference<Map<Long, Recipe>>() {
             });
         } catch (IOException e) {
@@ -115,7 +115,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @PostConstruct
     private void primalReader() {
-        fileService.readFromFile(fileName);
+       readFromFile();
     }
 
 

@@ -3,12 +3,14 @@ package my.app.cookbook.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NoArgsConstructor;
 import my.app.cookbook.model.Ingredient;
 import my.app.cookbook.model.Recipe;
 import my.app.cookbook.service.IngredientService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,8 +20,8 @@ public class IngredientServiceImpl implements IngredientService {
     private static Map<Long, Ingredient> ingredients = new TreeMap<>();
     private static long ingredientId = 1;
     private FileServiceImpl fileService;
-    @Value("${ingredient.file.name}")
-    private String fileName;
+    @Value("${ingredients.file.name}")
+    private String filePath;
 
     public IngredientServiceImpl(FileServiceImpl fileService) {
         this.fileService = fileService;
@@ -61,7 +63,7 @@ public class IngredientServiceImpl implements IngredientService {
     private void safeToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredients);
-            fileService.writeToFile(json, fileName);
+            fileService.writeToFile(json, filePath);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -69,12 +71,17 @@ public class IngredientServiceImpl implements IngredientService {
 
     private void readFromFile() {
         try {
-            String json = fileService.readFromFile(fileName);
+            String json = fileService.readFromFile(filePath);
             ingredients = new ObjectMapper().readValue(json, new TypeReference<Map<Long, Ingredient>>() {
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PostConstruct
+    private void primalReader() {
+        readFromFile();
     }
 
 

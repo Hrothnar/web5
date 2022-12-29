@@ -1,14 +1,12 @@
 package my.app.cookbook.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import my.app.cookbook.model.Ingredient;
 import my.app.cookbook.model.Recipe;
 import my.app.cookbook.service.impl.RecipeServiceImpl;
 import org.apache.commons.lang3.ObjectUtils;
