@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -115,7 +118,13 @@ public class RecipeServiceImpl implements RecipeService {
 
     @PostConstruct
     private void primalReader() {
-       readFromFile();
+        try {
+            if (Files.exists(Path.of(filePath)) && Files.size(Path.of(filePath)) != 0) {
+                readFromFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
